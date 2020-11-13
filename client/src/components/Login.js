@@ -1,51 +1,69 @@
-import React from "react";
+import React, {useState} from "react";
 import {axiosWithAuth} from '../utils/axiosAuth'
+import {useHistory} from 'react-router-dom'
 
-const Login = () => {
-  state = {
-    credentials:{
-      username:'',
-      password:''
-    }
-  }
-  login = e =>{
-    e.preventDefault();
 
-    axiosWithAuth()
-    .post('/api/login', this.state.credentials)
-    .then(res =>{
-      window.localStorage.setItem('token', res.data.payload)
-      this.props.history.push('/protected')
+const initial = {
+  username: '',
+  password: '',
+}
+const Login = () =>{
+  const [data, setData]=useState(initial)
+  const history= useHistory()
+
+  const handleChange = (event) =>{
+    event.preventDefault();
+    setData({
+        ...data,
+        [event.target.name]:event.target.value
     })
-    .catch(err => console.log(err))
-  }
+}
+
+const handleSubmit = (event) =>{
+    event.preventDefault()
+    axiosWithAuth()
+    .post('http://localhost:5000/api/login', data)
+    .then(res =>{
+        localStorage.setItem('token',res.data.payload)
+        console.log(res)
+        history.push('/protected')
+    })
+    .catch(error => {
+        console.log(error)
+    })
+
+}
+ 
   // make a post request to retrieve a token from the api
   // when you have handled the token, navigate to the BubblePage route
-  render(){
     return(
       <div>
-        <form>
+        <h1>Welcome to the Bubble App</h1>
+        <form className ='' onSubmit={handleSubmit}>
           <input
             type='text'
             name='username'
-            placeholder='1'
-            value={}
-            onChange={this.handleChange}
+            placeholder='Username'
+            value={data.username}
+            onChange={handleChange}
+            
           />
 
           <input
           type='password'
           name='password'
-          placeholder="2"
-          value={}
-          onChange={this.handleChange}
+          placeholder="Password"
+          value={data.password}
+          onChange={handleChange}
+          
 
           />
-          <button>Log In</button>
+          <button onClick ={handleSubmit}>Login!</button>
         </form>
       </div>
     )
   }
+
   
 
 export default Login;

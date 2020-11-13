@@ -1,7 +1,7 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
-import BubblePage from "./BubblePage";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import App from "../App";
 
 test("Fetches data and renders the bubbles", () => {
-  // Finish this test
+  render(<App/>)
 });
